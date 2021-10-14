@@ -68,10 +68,14 @@ namespace Lifts
             else if (direction == 2) // Если лифту надо выполнять действия на этаже
             {
                 motor.StopOnFloor(ref FinishOnFloor); // Послать сигнал выполнения действий на этаже мотору
-                stateElevator = StateElevator.waitonfloor; // Установить статус лифта в "Лифт выполняет действия на этаже"
                 if (FinishOnFloor) // Если лифт закончил выполнять действия на этаже
                 {
-                    direction = 0; // Обнулить направление лифта(стоять на месте)
+                    stateElevator = StateElevator.wait;
+                    direction = 0;
+                }
+                else
+                {
+                    stateElevator = StateElevator.waitonfloor; // Установить статус лифта в "Лифт выполняет действия на этаже"
                 }
             }
             else // Иначе действий никаких не трубется

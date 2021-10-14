@@ -67,6 +67,7 @@
     <Compile Include="Scheduler.cs" />
     <Compile Include="Sensor.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Visualizer.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

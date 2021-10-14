@@ -82,9 +82,8 @@ namespace Lifts
         public void DeterminingDirection()
         {
             currentFloor = controller.CurrentFloor; // Установить текущий этаж
-            if (queue.Count == 0 && controller.Direction != 2) // Если очередь пуста
+            if (queue.Count == 0) // Если очередь пуста
             {
-                controller.Direction = 0; // Остановить лифт
                 controller.stateElevator = StateElevator.wait;
                 MainFloor = -1; // "Обнулить" требуемый этаж
             }
@@ -97,7 +96,11 @@ namespace Lifts
             else if (controller.Direction != 2) // Инчае если лифт не выполняет действий на этаже
             {
                 if (currentFloor > MainFloor) controller.Direction = -1; // Если текущий этаж выше нужного, то отправить лифт вниз
-                else if (currentFloor < MainFloor) controller.Direction = 1; // Если текущий этаж ниже нужного, то отправить лифт вверх
+                if (currentFloor < MainFloor) controller.Direction = 1; // Если текущий этаж ниже нужного, то отправить лифт вверх
+            }
+            else if (controller.Direction == 2 || controller.stateElevator == StateElevator.wait) // Инчае если лифт выполняет действий на этаже
+            {
+                if (queue.Count != 0 && MainFloor == currentFloor) MainFloor = queue[0]; // Если очередь не пуста и достигли требуемого этажа, то установить требуемый этаж на первый из очереди
             }
         }
     }

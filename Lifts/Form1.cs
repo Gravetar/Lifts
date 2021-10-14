@@ -14,8 +14,32 @@ namespace Lifts
     {
         Elevator elev = new Elevator();
         Scheduler scheduler = new Scheduler();
+        Visualizer visualizer = new Visualizer();
 
         DEBUGGER _DEBUGGER;
+
+        private void StartBuilding()
+        {
+            Controls.AddRange(visualizer.ElevatorsVis.ToArray());
+            Controls.AddRange(visualizer.FloorVis.ToArray());
+            Controls.Add(visualizer.ElevatorView);
+
+            TableLayoutPanel ElView = visualizer.ElevatorView.Controls.OfType<TableLayoutPanel>().FirstOrDefault();
+            List<Button> ElButs = ElView.Controls.OfType<Button>().ToList();
+
+            foreach (Button item in ElButs)
+            {
+                item.Click += button1_Click;
+            }
+            foreach (GroupBox itemgb in Controls.OfType<GroupBox>().Where(x => x.Name.Contains("Floor_")).ToList())
+            {
+                foreach (Button itemb in itemgb.Controls.OfType<Button>().Where(x => x.Name.Contains("ButU_") || x.Name.Contains("ButD_")).ToList())
+                {
+                    itemb.Click += button4_Click;
+                }
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -25,7 +49,7 @@ namespace Lifts
 
         private void Form1_Load(object sender, EventArgs e)
         {
-             
+            StartBuilding();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -34,6 +58,8 @@ namespace Lifts
 
             _DEBUGGER._ticks += 1;
             richTextBox1.Text = _DEBUGGER.print(true, true);
+
+            visualizer.Display(scheduler.elevators, Controls.OfType<PictureBox>().Where(x => x.Name.Contains("ElevatorPic_")).ToList());
 
             foreach (Control cnt in groupBox1.Controls)
             {
