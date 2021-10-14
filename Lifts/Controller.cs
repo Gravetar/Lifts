@@ -14,6 +14,11 @@ namespace Lifts
         public Motor motor = new Motor();
 
         /// <summary>
+        /// Дверь лифта отвечает за открытие-закрытие двери
+        /// </summary>
+        public Door door = new Door();
+
+        /// <summary>
         /// Состояния лифта
         /// </summary>
         public StateElevator stateElevator = StateElevator.wait;
@@ -68,6 +73,8 @@ namespace Lifts
             else if (direction == 2) // Если лифту надо выполнять действия на этаже
             {
                 motor.StopOnFloor(ref FinishOnFloor); // Послать сигнал выполнения действий на этаже мотору
+                if (motor.StopStatus == 1) door.Open();
+                else door.Close();
                 if (FinishOnFloor) // Если лифт закончил выполнять действия на этаже
                 {
                     stateElevator = StateElevator.wait;

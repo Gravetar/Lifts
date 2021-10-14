@@ -20,19 +20,41 @@ namespace Lifts
 
         public void AddRequest(int direction, int floor)
         {
+            //Проверка лифта на то, что он стоит на данном этаже
+            if (CheckWaiting(floor)) return;
             //Проверка лифта на совпадения направления
-            if (CheckByDirection(floor, direction)) return;
-            //Проверка, есть ли свободные лифты
-            else if (CheckFree(floor)) return;
+            else if (CheckByDirection(floor, direction)) return;
+            //Проверка, есть ли свободные лифты и какой из них ближайший
+            else if (CheckNear(floor)) return;
             //Установить лифт, который освободится в ближайшее время
             else if (CheckNearFree(floor)) return;
         }
 
-        bool CheckFree(int floor)
+        bool CheckNear(int floor)
         {
+            Elevator elevmin = null;
+            int min = 100;
             foreach (Elevator item in elevators)
             {
                 if (item.elevatorDispatcher.controller.stateElevator == StateElevator.wait)
+                {
+                    if (Math.Abs(floor - item.elevatorDispatcher.controller.CurrentFloor) < min)
+                    {
+                        elevmin = item;
+                        min = Math.Abs(floor - item.elevatorDispatcher.controller.CurrentFloor);
+                    }
+                }
+            }
+            if (elevmin == null) return false;
+            elevmin.elevatorDispatcher.AddFloor(floor);
+            return true; // Запрос обработан, этаж добавлен в очередь
+        }
+
+        bool CheckWaiting(int floor)
+        {
+            foreach (Elevator item in elevators)
+            {
+                if (item.elevatorDispatcher.controller.stateElevator == StateElevator.wait && item.elevatorDispatcher.controller.CurrentFloor == floor)
                 {
                     item.elevatorDispatcher.AddFloor(floor);
                     return true; // Запрос обработан, этаж добавлен в очередь
@@ -40,7 +62,6 @@ namespace Lifts
             }
             return false; //Свободных лифтов нет
         }
-
         bool CheckByDirection(int floor, int direction)
         {
             //Проверка, есть ли свободные лифты

@@ -10,14 +10,20 @@ namespace Lifts
     {
         private Scheduler _scheduler;
         public int _ticks = 0;
+        int CurrentElevator = 0;
         public DEBUGGER(Scheduler scheduler)
         {
             _scheduler = scheduler;
         }
 
-        public string print(bool lifts, bool Ticks)
+        public string print(bool CurrentElevaator, bool lifts, bool Ticks, int CurElev)
         {
             string result = "";
+            if (CurrentElevaator)
+            {
+                result += "Открытый лифт:" + CurElev.ToString() + "\n";
+                result += "--------------------\n";
+            }
             if (lifts)
             {
                 int lift = 1;

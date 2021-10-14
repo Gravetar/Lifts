@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,26 @@ namespace Lifts
 {
     class Door
     {
-        void Open()
-        { 
-        
-        }
-
-        void Close()
+        public StateDoor stateDoor = StateDoor.closed;
+        public void Open()
         {
-
+            stateDoor = StateDoor.opened;
         }
+
+        public void Close()
+        {
+            stateDoor = StateDoor.closed;
+        }
+
+        public bool IsOpen()
+        {
+            if (stateDoor == StateDoor.opened) return true;
+            else return false;
+        }
+    }
+
+    enum StateDoor
+    {
+        opened, closed
     }
 }

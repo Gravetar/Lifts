@@ -14,7 +14,7 @@ namespace Lifts
         /// 1 - Открываются двери
         /// 2 - Закрываются двери
         /// </summary>
-        private int StopStatus = 0;
+        public int StopStatus = 0;
 
         /// <summary>
         /// Направить лифт вверх на один этаж
@@ -49,9 +49,8 @@ namespace Lifts
         {
             Finished = false;
             if (StopStatus == 0) { StopStatus = 1; Console.WriteLine("Лифт остановился"); } //Остановка
-            else if (StopStatus == 1) {StopStatus = 2; Console.WriteLine("Лифт открыл двери"); } //Открытие двери
-            else if (StopStatus == 2) { StopStatus = 3; Console.WriteLine("Лифт закрыл двери"); } //Открытие двери
-            else if (StopStatus == 3) {StopStatus = 0; Console.WriteLine("Лифт продолжил выполнять задачи"); Finished = true; } // Закрытие двери и ожидание
+            else if (StopStatus == 1) {StopStatus = 0; Console.WriteLine("Лифт открыл двери"); ; Finished = true; } //Открытие двери
+            //else if (StopStatus == 2) { StopStatus = 0; Console.WriteLine("Лифт закрыл двери"); Finished = true; } //Закрытие двери
         }
     }
 }

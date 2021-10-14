@@ -12,7 +12,7 @@ namespace Lifts
 {
     public partial class Form1 : Form
     {
-        Elevator elev = new Elevator();
+        int CurrentElevator = 0;
         Scheduler scheduler = new Scheduler();
         Visualizer visualizer = new Visualizer();
 
@@ -24,18 +24,23 @@ namespace Lifts
             Controls.AddRange(visualizer.FloorVis.ToArray());
             Controls.Add(visualizer.ElevatorView);
 
+            foreach (PictureBox item in visualizer.ElevatorsVis)
+            {
+                item.Click += OnElevatorClick;
+            }
+
             TableLayoutPanel ElView = visualizer.ElevatorView.Controls.OfType<TableLayoutPanel>().FirstOrDefault();
             List<Button> ElButs = ElView.Controls.OfType<Button>().ToList();
 
             foreach (Button item in ElButs)
             {
-                item.Click += button1_Click;
+                item.Click += ButtonsPanelClick;
             }
             foreach (GroupBox itemgb in Controls.OfType<GroupBox>().Where(x => x.Name.Contains("Floor_")).ToList())
             {
                 foreach (Button itemb in itemgb.Controls.OfType<Button>().Where(x => x.Name.Contains("ButU_") || x.Name.Contains("ButD_")).ToList())
                 {
-                    itemb.Click += button4_Click;
+                    itemb.Click += UpDownButtonsClick;
                 }
             }
         }
@@ -44,6 +49,7 @@ namespace Lifts
         {
             InitializeComponent();
             timer1.Start();
+            TimerPriority.Start();
             _DEBUGGER = new DEBUGGER(scheduler);
         }
 
@@ -57,42 +63,32 @@ namespace Lifts
             scheduler.Working();
 
             _DEBUGGER._ticks += 1;
-            richTextBox1.Text = _DEBUGGER.print(true, true);
+            richTextBox1.Text = _DEBUGGER.print(true, true, true, CurrentElevator);
 
-            visualizer.Display(scheduler.elevators, Controls.OfType<PictureBox>().Where(x => x.Name.Contains("ElevatorPic_")).ToList());
-
-            foreach (Control cnt in groupBox1.Controls)
-            {
-                Button tb = cnt as Button;
-                if (tb != null)
-                {
-                    tb.Enabled = true;
-                    foreach (int item in scheduler.elevators[0].elevatorDispatcher.Queue)
-                    {
-                        if (tb.Text == item.ToString()) tb.Enabled = false;
-                    }
-                }
-            }
-            textBox1.Text = scheduler.elevators[0].elevatorDispatcher.controller.CurrentFloor.ToString();
-            string dir = "";
-
-            if (scheduler.elevators[0].elevatorDispatcher.controller.Direction == 1) dir = "Вверх";
-            if (scheduler.elevators[0].elevatorDispatcher.controller.Direction == -1) dir = "Вниз";
-            if (scheduler.elevators[0].elevatorDispatcher.controller.Direction == 0) dir = "Стоит";
-            if (scheduler.elevators[0].elevatorDispatcher.controller.Direction == 2) dir = "Двери";
-            label1.Text = dir;
+            visualizer.DisplayElevator(scheduler.elevators, Controls.OfType<PictureBox>().Where(x => x.Name.Contains("ElevatorPic_")).ToList());
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ButtonsPanelClick(object sender, EventArgs e)
         {
-            scheduler.elevators[0].elevatorDispatcher.AddFloor(int.Parse((sender as Button).Text));
+            scheduler.elevators[CurrentElevator].elevatorDispatcher.AddFloor(int.Parse((sender as Button).Text));
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void UpDownButtonsClick(object sender, EventArgs e)
         {
             int floor = int.Parse((sender as Button).Tag.ToString().Split('|')[0]);
             int direction = int.Parse((sender as Button).Tag.ToString().Split('|')[1]);
             scheduler.AddRequest(direction, floor);
+            (sender as Button).Enabled = false;
+        }
+
+        private void OnElevatorClick(object sender, EventArgs e)
+        {
+            CurrentElevator = int.Parse((sender as PictureBox).Name.Split('_')[1]);
+        }
+
+        private void TimerPriority_Tick(object sender, EventArgs e)
+        {
+            visualizer.PriorityDisplay(scheduler.elevators, CurrentElevator);
         }
     }
 }
