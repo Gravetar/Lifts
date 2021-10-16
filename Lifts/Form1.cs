@@ -21,6 +21,7 @@ namespace Lifts
         private void StartBuilding()
         {
             Controls.AddRange(visualizer.ElevatorsVis.ToArray());
+            Controls.AddRange(visualizer.FloorPic.ToArray());
             Controls.AddRange(visualizer.FloorVis.ToArray());
             Controls.Add(visualizer.ElevatorView);
 
@@ -70,19 +71,31 @@ namespace Lifts
 
         private void ButtonsPanelClick(object sender, EventArgs e)
         {
-            scheduler.elevators[CurrentElevator].elevatorDispatcher.AddFloor(int.Parse((sender as Button).Text));
+            OutFocus.Focus();
+            if ((sender as Button).Tag.ToString() == "Off")
+            {
+                scheduler.elevators[CurrentElevator].elevatorDispatcher.AddFloor(int.Parse((sender as Button).Text));
+            }
         }
 
         private void UpDownButtonsClick(object sender, EventArgs e)
         {
-            int floor = int.Parse((sender as Button).Tag.ToString().Split('|')[0]);
-            int direction = int.Parse((sender as Button).Tag.ToString().Split('|')[1]);
-            scheduler.AddRequest(direction, floor);
-            (sender as Button).Enabled = false;
+            Button button = (sender as Button);
+            if (button.Tag.ToString()[button.Tag.ToString().Length-1] == '-')
+            {
+                int floor = int.Parse((sender as Button).Tag.ToString().Split('|')[0]);
+                int direction = int.Parse((sender as Button).Tag.ToString().Split('|')[1]);
+                scheduler.AddRequest(direction, floor);
+                button.FlatAppearance.BorderSize = 2;
+                button.FlatAppearance.BorderColor = Color.Red;
+
+                button.Tag = button.Tag.ToString().Substring(0, button.Tag.ToString().Length - 1) + "+";
+            }
         }
 
         private void OnElevatorClick(object sender, EventArgs e)
         {
+            visualizer.ChangedElevator(scheduler.elevators, CurrentElevator);
             CurrentElevator = int.Parse((sender as PictureBox).Name.Split('_')[1]);
         }
 

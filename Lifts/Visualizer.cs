@@ -11,9 +11,9 @@ namespace Lifts
     class Visualizer
     {
         public List<PictureBox> ElevatorsVis = new List<PictureBox>();
+        public List<PictureBox> FloorPic = new List<PictureBox>();
         public List<GroupBox> FloorVis = new List<GroupBox>();
         public GroupBox ElevatorView;
-
         private TextBox tbFloor;
         private Label lbDirection;
 
@@ -26,10 +26,27 @@ namespace Lifts
                 PictureBox newPictureBox = new PictureBox();
                 newPictureBox.Name = "ElevatorPic_" + i.ToString();
                 newPictureBox.Location = position;
+                newPictureBox.BackgroundImage = Properties.Resources.ElevatorClose;
                 newPictureBox.BackgroundImageLayout = ImageLayout.Stretch;
-                position.X += Settings.ELEVATORSIZE.Width;
                 newPictureBox.Size = Settings.ELEVATORSIZE;
                 ElevatorsVis.Add(newPictureBox);
+                position.X += Settings.ELEVATORSIZE.Width;
+            }
+
+            for (int i = 1; i < Settings.FLOORCOUNT+1; i++)
+            {
+                position = new Point(Settings.ELEVATORSIZE.Width, Settings.ELEVATORSIZE.Height * i - 100);
+                for (int j = 0; j < Settings.ELEVATORS; j++)
+                {
+                    PictureBox newPictureBox = new PictureBox();
+                    newPictureBox.Name = "FloorPic_" + j.ToString();
+                    newPictureBox.Location = position;
+                    newPictureBox.BackgroundImage = Properties.Resources.Floor;
+                    newPictureBox.BackgroundImageLayout = ImageLayout.Stretch;
+                    newPictureBox.Size = Settings.ELEVATORSIZE;
+                    FloorPic.Add(newPictureBox);
+                    position.X += Settings.ELEVATORSIZE.Width;
+                }
             }
 
             position = new Point(0, Settings.ELEVATORSIZE.Height * Settings.FLOORCOUNT-100);
@@ -38,6 +55,8 @@ namespace Lifts
                 GroupBox newgroupbox = new GroupBox();
                 newgroupbox.Size = Settings.ELEVATORSIZE;
                 newgroupbox.Location = position;
+                newgroupbox.BackgroundImage = Properties.Resources.FloorUD;
+                newgroupbox.BackgroundImageLayout = ImageLayout.Stretch;
                 position.Y -= Settings.ELEVATORSIZE.Height;
                 newgroupbox.Name = "Floor_" + i.ToString();
                 newgroupbox.Text = "Этаж: " + i.ToString();
@@ -45,16 +64,20 @@ namespace Lifts
                 Button buttonup = new Button();
                 buttonup.Name = "ButU_" + i.ToString();
                 buttonup.Text = "U";
-                buttonup.Tag = i.ToString() + "|1";
+                buttonup.Tag = i.ToString() + "|1|-";
                 buttonup.Size = new Size(30, 30);
                 buttonup.Location = new Point(newgroupbox.Size.Width / 3 - 30, newgroupbox.Size.Width / 3);
+                buttonup.FlatStyle = FlatStyle.Flat;
+                buttonup.FlatAppearance.BorderSize = 1;
 
                 Button buttondown = new Button();
                 buttondown.Name = "ButD_" + i.ToString();
                 buttondown.Text = "D";
-                buttondown.Tag = i.ToString() + "|-1";
+                buttondown.Tag = i.ToString() + "|-1|-";
                 buttondown.Size = new Size(30, 30);
                 buttondown.Location = new Point(newgroupbox.Size.Width / 3 + 30, newgroupbox.Size.Width / 3);
+                buttondown.FlatStyle = FlatStyle.Flat;
+                buttondown.FlatAppearance.BorderSize = 1;
 
                 if (buttonup.Tag.ToString().Split('|')[0] != (Settings.FLOORCOUNT-1).ToString())
                     newgroupbox.Controls.Add(buttonup);
@@ -70,6 +93,7 @@ namespace Lifts
             ElevatorView.AutoSize = true;
             ElevatorView.Size = new Size(0, 0);
             ElevatorView.Location = Settings.ELEVATORINSIDELOCATION;
+            ElevatorView.MinimumSize = Settings.ELEVATORINSIDESIZE;
             ElevatorView.Name = "ElevatorView";
             ElevatorView.Text = "Лифт 0";
 
@@ -104,6 +128,10 @@ namespace Lifts
                         buttononfloor.Text = FloorOnBut.ToString();
                         ElevatorButtons.Controls.Add(buttononfloor, j, i);
                         FloorOnBut += 1;
+
+                        buttononfloor.FlatStyle = FlatStyle.Flat;
+                        buttononfloor.FlatAppearance.BorderSize = 1;
+
                     }
                     else
                     {
@@ -155,7 +183,11 @@ namespace Lifts
                         if (elev.elevatorDispatcher.controller.CurrentFloor == int.Parse(button.Tag.ToString().Split('|')[0]))
                         {
                             if (elev.elevatorDispatcher.controller.stateElevator == StateElevator.wait)
-                            button.Enabled = true;
+                            {
+                                button.FlatAppearance.BorderSize = 1;
+                                button.FlatAppearance.BorderColor = Color.Black;
+                                button.Tag = button.Tag.ToString().Substring(0, button.Tag.ToString().Length - 1) + "-";
+                            }
                         }
                     }
                 }
@@ -186,11 +218,33 @@ namespace Lifts
                 Button b = cnt as Button;
                 if (b != null)
                 {
-                    b.Enabled = true;
+                    b.FlatAppearance.BorderSize = 1;
+                    b.FlatAppearance.BorderColor = Color.Black;
+                    b.Tag = "Off";
                     foreach (int item in elevators[CurrentElevator].elevatorDispatcher.Queue)
                     {
-                        if (b.Text == item.ToString()) b.Enabled = false;
+                        if (b.Text == item.ToString())
+                        {
+                            b.FlatAppearance.BorderSize = 2;
+                            b.FlatAppearance.BorderColor = Color.Red;
+                            b.Tag = "On";
+                            break;
+                        }
                     }
+                }
+            }
+        }
+
+        public void ChangedElevator(List<Elevator> elevators, int CurrentElevator)
+        {
+            foreach (Control cnt in ElevatorView.Controls.OfType<TableLayoutPanel>().FirstOrDefault().Controls.OfType<Button>().ToList())
+            {
+                Button b = cnt as Button;
+                if (b != null)
+                {
+                    b.FlatAppearance.BorderSize = 1;
+                    b.FlatAppearance.BorderColor = Color.Black;
+                    b.Tag = "Off";
                 }
             }
         }
