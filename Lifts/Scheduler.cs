@@ -56,7 +56,7 @@ namespace Lifts
             {
                 if (item.elevatorDispatcher.controller.stateElevator == StateElevator.wait && item.elevatorDispatcher.controller.CurrentFloor == floor)
                 {
-                    item.elevatorDispatcher.AddFloor(floor);
+                    item.elevatorDispatcher.controller.Direction = 2;
                     return true; // Запрос обработан, этаж добавлен в очередь
                 }
             }

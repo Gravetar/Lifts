@@ -29,6 +29,7 @@ namespace Lifts
                 newPictureBox.BackgroundImage = Properties.Resources.ElevatorClose;
                 newPictureBox.BackgroundImageLayout = ImageLayout.Stretch;
                 newPictureBox.Size = Settings.ELEVATORSIZE;
+                newPictureBox.Cursor = Cursors.Hand;
                 ElevatorsVis.Add(newPictureBox);
                 position.X += Settings.ELEVATORSIZE.Width;
             }

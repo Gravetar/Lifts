@@ -103,5 +103,10 @@ namespace Lifts
         {
             visualizer.PriorityDisplay(scheduler.elevators, CurrentElevator);
         }
+
+        private void RepairClick(object sender, EventArgs e)
+        {
+            scheduler.elevators[CurrentElevator].elevatorDispatcher.AddFloor(0);
+        }
     }
 }
