@@ -47,8 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ButtomElevator.cs" />
-    <Compile Include="ButtomFloor.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="DEBUGGER.cs" />
     <Compile Include="Door.cs" />
@@ -60,13 +58,10 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="LightDirection.cs" />
-    <Compile Include="LightFloor.cs" />
     <Compile Include="Motor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler.cs" />
-    <Compile Include="Sensor.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Visualizer.cs" />
     <EmbeddedResource Include="Form1.resx">
