@@ -106,6 +106,7 @@ namespace Lifts
 
         private void RepairClick(object sender, EventArgs e)
         {
+            scheduler.elevators[CurrentElevator].elevatorDispatcher.Queue = new List<int>();
             scheduler.elevators[CurrentElevator].elevatorDispatcher.AddFloor(0);
         }
     }

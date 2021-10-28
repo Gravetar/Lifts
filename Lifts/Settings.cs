@@ -12,11 +12,11 @@ namespace Lifts
         /// <summary>
         /// Количество этажей
         /// </summary>
-        public static int FLOORCOUNT = 5;
+        public static int FLOORCOUNT = 7;
         /// <summary>
         /// Количество лифтов
         /// </summary>
-        public static int ELEVATORS = 3;
+        public static int ELEVATORS = 7;
 
         /// <summary>
         /// Размер лифта(изображение)

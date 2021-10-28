@@ -22,6 +22,10 @@ namespace Lifts
             {
                 return queue;
             }
+            set
+            {
+                queue = value;
+            }
         }
         /// <summary>
         /// Очередь лифта геттер в представлении string
